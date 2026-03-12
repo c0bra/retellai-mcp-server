@@ -1,6 +1,6 @@
 {
-	"name": "@abhaybabbar/retellai-mcp-server",
-	"version": "1.0.2",
+	"name": "@bhann/retellai-mcp-server",
+	"version": "1.0.0",
 	"type": "module",
 	"main": "build/index.js",
 	"scripts": {
@@ -9,10 +9,23 @@
 		"watch": "tsc --watch",
 		"inspector": "npx @modelcontextprotocol/inspector build/index.js"
 	},
-	"keywords": [],
-	"author": "abhaybabbar",
-	"license": "ISC",
+	"keywords": [
+		"mcp",
+		"model-context-protocol",
+		"retell",
+		"retellai"
+	],
+	"author": "Brian Hann",
+	"license": "MIT",
 	"description": "RetellAi MCP Server",
+	"files": [
+		"build",
+		"README.md",
+		".env.sample"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
 	"dependencies": {
 		"@modelcontextprotocol/sdk": "^1.27.1",
 		"dotenv": "^16.5.0",
@@ -20,15 +33,15 @@
 		"zod": "^4.3.6"
 	},
 	"bin": {
-		"@abhaybabbar/retellai-mcp-server": "build/index.js"
+		"retellai-mcp-server": "build/index.js"
 	},
 	"devDependencies": {},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/abhaybabbar/retellai-mcp-server.git"
+		"url": "git+https://github.com/c0bra/retellai-mcp-server.git"
 	},
 	"bugs": {
-		"url": "https://github.com/abhaybabbar/retellai-mcp-server/issues"
+		"url": "https://github.com/c0bra/retellai-mcp-server/issues"
 	},
-	"homepage": "https://github.com/abhaybabbar/retellai-mcp-server#readme"
+	"homepage": "https://github.com/c0bra/retellai-mcp-server#readme"
 }

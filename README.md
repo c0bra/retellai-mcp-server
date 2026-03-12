@@ -1,5 +1,7 @@
 # RetellAI MCP Server
 
+Maintained fork of `@abhaybabbar/retellai-mcp-server`, updated to work with current MCP SDK releases.
+
 This is a Model Context Protocol (MCP) server for RetellAI. It lets MCP-compatible assistants work with RetellAI calls, agents, phone numbers, voices, and Retell LLM resources.
 
 ## Table of Contents
@@ -33,7 +35,13 @@ Before adding this server to an MCP client, make sure you have:
 - `Node.js` installed so the client can run `npx`
 - A RetellAI API key from <https://dashboard.retellai.com/apiKey>
 
-This fork is currently easiest to install directly from GitHub:
+If the npm package is available, install it like this:
+
+```bash
+npx -y @bhann/retellai-mcp-server
+```
+
+If you are testing before the npm package is published, use the GitHub fallback:
 
 ```bash
 npx -y github:c0bra/retellai-mcp-server
@@ -56,7 +64,7 @@ Add this to your OpenCode config:
   "mcp": {
     "retellai-mcp-server": {
       "type": "local",
-      "command": ["npx", "-y", "github:c0bra/retellai-mcp-server"],
+      "command": ["npx", "-y", "@bhann/retellai-mcp-server"],
       "environment": {
         "RETELL_API_KEY": "<your_retellai_token>"
       },
@@ -82,7 +90,7 @@ Add this to `.cursor/mcp.json`:
   "mcpServers": {
     "retellai-mcp-server": {
       "command": "npx",
-      "args": ["-y", "github:c0bra/retellai-mcp-server"],
+      "args": ["-y", "@bhann/retellai-mcp-server"],
       "env": {
         "RETELL_API_KEY": "<your_retellai_token>"
       }
@@ -94,7 +102,7 @@ Add this to `.cursor/mcp.json`:
 If you prefer the UI, create a new stdio MCP server with:
 
 - Command: `npx`
-- Args: `-y github:c0bra/retellai-mcp-server`
+- Args: `-y @bhann/retellai-mcp-server`
 - Environment variable: `RETELL_API_KEY=<your_retellai_token>`
 
 Restart Cursor or reload the workspace after saving the config.
@@ -113,7 +121,7 @@ Add this to `claude_desktop_config.json`:
   "mcpServers": {
     "retellai-mcp-server": {
       "command": "npx",
-      "args": ["-y", "github:c0bra/retellai-mcp-server"],
+      "args": ["-y", "@bhann/retellai-mcp-server"],
       "env": {
         "RETELL_API_KEY": "<your_retellai_token>"
       }
@@ -129,13 +137,13 @@ Restart Claude Desktop after editing the config file.
 Most stdio-based MCP clients can use this server with the same launch settings:
 
 - Command: `npx`
-- Args: `-y github:c0bra/retellai-mcp-server`
+- Args: `-y @bhann/retellai-mcp-server`
 - Environment variable: `RETELL_API_KEY=<your_retellai_token>`
 
 If your client expects a single command string instead of separate `command` and `args` fields, use the equivalent one-line command:
 
 ```bash
-npx -y github:c0bra/retellai-mcp-server
+npx -y @bhann/retellai-mcp-server
 ```
 
 ## Example Use Cases
