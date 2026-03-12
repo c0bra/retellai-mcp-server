@@ -1,28 +1,31 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import Retell from "retell-sdk";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type Retell from "retell-sdk";
+
+import type { z } from "zod";
 
 import { GetVoiceInputSchema } from "../schemas/index.js";
 import { transformVoiceOutput } from "../transformers/index.js";
-import { createToolHandler } from "./utils.js";
+import { createToolHandler, createZeroArgToolHandler } from "./utils.js";
 
 export const registerVoiceTools = (server: McpServer, retellClient: Retell) => {
-  server.tool(
-    "list_voices",
-    "Lists all available Retell voices",
-    {},
-    createToolHandler(async () => {
-      const voices = await retellClient.voice.list();
-      return voices.map(transformVoiceOutput);
-    })
-  );
+	server.registerTool(
+		"list_voices",
+		{ description: "Lists all available Retell voices" },
+		createZeroArgToolHandler(async () => {
+			const voices = await retellClient.voice.list();
+			return voices.map(transformVoiceOutput);
+		})
+	);
 
-  server.tool(
-    "get_voice",
-    "Gets details of a specific voice",
-    GetVoiceInputSchema.shape,
-    createToolHandler(async (data) => {
-      const voice = await retellClient.voice.retrieve(data.voiceId);
-      return transformVoiceOutput(voice);
-    })
-  );
+	server.registerTool(
+		"get_voice",
+		{
+			description: "Gets details of a specific voice",
+			inputSchema: GetVoiceInputSchema,
+		},
+		createToolHandler(async (data: z.infer<typeof GetVoiceInputSchema>) => {
+			const voice = await retellClient.voice.retrieve(data.voiceId);
+			return transformVoiceOutput(voice);
+		})
+	);
 };
