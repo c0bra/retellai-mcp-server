@@ -19,7 +19,6 @@ function createMcpServer() {
   const mcpServer = new McpServer({
     name: "Retell MCP",
     version: "0.1.0",
-    capabilities: [],
   });
 
   registerAllTools(mcpServer, retellClient);
