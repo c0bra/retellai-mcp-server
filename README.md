@@ -35,6 +35,16 @@ The RetellAI MCP server provides tools for:
 }
 ```
 
+### Troubleshooting: "No tools available"
+
+If Claude Desktop shows the server but no tools, upgrade to the latest package version:
+
+```bash
+npx -y @abhaybabbar/retellai-mcp-server@latest
+```
+
+This issue is typically caused by dependency/version mismatch in older installs.
+
 ## Example use cases:
 
 1. List all the numbers I have in retellai
