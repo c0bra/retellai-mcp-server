@@ -25,7 +25,8 @@ This is a Model Context Protocol (MCP) server for RetellAI. It lets MCP-compatib
 The RetellAI MCP server provides tools for:
 
 - **Call Management**: Create and manage phone calls and web calls
-- **Agent Management**: Create and manage voice agents with different LLM configurations
+- **Agent Management**: Create and manage voice agents backed by Retell LLM or conversation-flow response engines
+- **Conversation Flow Management**: Create, update, retrieve, list, and delete Retell conversation flows
 - **Phone Number Management**: Provision and configure phone numbers
 - **Voice Management**: Access and use different voice options
 - **Retell LLM Management**: Create and manage Retell response engines
@@ -190,17 +191,20 @@ I found 3 Retell agents:
 - Pizza Delivery Agent
   agent_id: agent_123
   voice_id: elevenlabs-Willa
+  response_engine.type: retell-llm
   response_engine.llm_id: llm_100
 
 - Leasing Follow-up Agent
   agent_id: agent_456
   voice_id: cartesia-Cleo
+  response_engine.type: retell-llm
   response_engine.llm_id: llm_200
 
 - Front Desk Overflow Agent
   agent_id: agent_789
   voice_id: retell-Maren
-  response_engine.llm_id: llm_300
+  response_engine.type: conversation-flow
+  response_engine.conversation_flow_id: flow_300
 ```
 
 ### 3. Tell me more about the pizza delivery agent
@@ -225,7 +229,47 @@ Here is a summary of the Pizza Delivery Agent:
 - begin_message: "Hi, I'd like to place a delivery order."
 ```
 
-### 4. Create an agent and use it to place an order
+### 4. Create a conversation flow for a flow-backed agent
+
+Prompt:
+
+```text
+Create a conversation flow that greets the caller, asks how it can help, and starts with the agent speaking first.
+```
+
+Example output:
+
+```text
+Created Retell conversation flow successfully.
+
+Conversation Flow:
+- conversation_flow_id: flow_123
+- version: 1
+- start_speaker: agent
+```
+
+### 5. Create an agent backed by an existing conversation flow
+
+Prompt:
+
+```text
+Create a new Retell agent that uses my existing conversation flow flow_123 and the voice elevenlabs-Willa.
+```
+
+Example output:
+
+```text
+Created Retell agent successfully.
+
+Agent:
+- agent_id: agent_902
+- name: Flow Agent
+- voice_id: elevenlabs-Willa
+- response_engine.type: conversation-flow
+- response_engine.conversation_flow_id: flow_123
+```
+
+### 6. Create an agent and use it to place an order
 
 Prompt sequence:
 
@@ -246,6 +290,7 @@ Created Retell resources successfully.
 Agent:
 - agent_id: agent_901
 - name: Pizza Order Agent
+- response_engine.type: retell-llm
 
 Retell LLM:
 - llm_id: llm_901
@@ -304,12 +349,20 @@ The outbound call has been created and is ready to run through RetellAI.
 
 ### Agent Tools
 
-- `list_agents`: Lists all Retell agents
+- `list_agents`: Lists all Retell agents, including Retell LLM and conversation-flow-backed agents
 - `create_agent`: Creates a new Retell agent
 - `get_agent`: Gets a Retell agent by ID
 - `update_agent`: Updates an existing Retell agent
 - `delete_agent`: Deletes a Retell agent
 - `get_agent_versions`: Gets all versions of a Retell agent
+
+### Conversation Flow Tools
+
+- `list_conversation_flows`: Lists all Retell conversation flows
+- `create_conversation_flow`: Creates a new Retell conversation flow
+- `get_conversation_flow`: Gets a Retell conversation flow by ID
+- `update_conversation_flow`: Updates an existing Retell conversation flow
+- `delete_conversation_flow`: Deletes a Retell conversation flow
 
 ### Phone Number Tools
 
@@ -331,6 +384,8 @@ The outbound call has been created and is ready to run through RetellAI.
 - `get_retell_llm`: Gets a Retell LLM by ID
 - `update_retell_llm`: Updates an existing Retell LLM
 - `delete_retell_llm`: Deletes a Retell LLM
+
+Retell LLM tools remain separate from agent management. You can now manage conversation flows directly through MCP, then attach them to an agent through `create_agent` or `update_agent` using `response_engine.type = "conversation-flow"` and `response_engine.conversation_flow_id`.
 
 ## License
 
