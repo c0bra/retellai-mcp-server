@@ -158,15 +158,24 @@ const AnalysisDataSchema = z.discriminatedUnion("type", [
 ]);
 
 export const CreateAgentInputSchema = z.object({
-	response_engine: z.object({
-		type: z.literal("retell-llm"),
-		llm_id: z
-			.string()
-			.describe(
-				"ID of the Retell LLM Response Engine, if llm_id not mentioned by user, create a new one"
-			),
-		version: z.number().optional(),
-	}),
+	response_engine: z.discriminatedUnion("type", [
+		z.object({
+			type: z.literal("retell-llm"),
+			llm_id: z
+				.string()
+				.describe(
+					"ID of the Retell LLM response engine. If llm_id is not mentioned by user, create a new Retell LLM first"
+				),
+			version: z.number().nullable().optional(),
+		}),
+		z.object({
+			type: z.literal("conversation-flow"),
+			conversation_flow_id: z
+				.string()
+				.describe("ID of the Retell conversation flow response engine"),
+			version: z.number().nullable().optional(),
+		}),
+	]),
 	voice_id: z.string().describe("ID of the voice to use"),
 	agent_name: z.string().optional().describe("Name of the agent"),
 	voice_model: z
@@ -258,11 +267,18 @@ export const GetAgentInputSchema = z.object({
 export const UpdateAgentInputSchema = z.object({
 	agentId: z.string().describe("The ID of the agent to update"),
 	response_engine: z
-		.object({
-			type: z.literal("retell-llm"),
-			llm_id: z.string().optional(),
-			version: z.number().optional(),
-		})
+		.discriminatedUnion("type", [
+			z.object({
+				type: z.literal("retell-llm"),
+				llm_id: z.string(),
+				version: z.number().nullable().optional(),
+			}),
+			z.object({
+				type: z.literal("conversation-flow"),
+				conversation_flow_id: z.string(),
+				version: z.number().nullable().optional(),
+			}),
+		])
 		.optional(),
 	voice_id: z.string().optional(),
 	agent_name: z.string().optional(),
@@ -310,11 +326,18 @@ export const UpdateAgentInputSchema = z.object({
 
 export const AgentOutputSchema = z.object({
 	agent_id: z.string(),
-	response_engine: z.object({
-		type: z.literal("retell-llm"),
-		llm_id: z.string(),
-		version: z.number(),
-	}),
+	response_engine: z.discriminatedUnion("type", [
+		z.object({
+			type: z.literal("retell-llm"),
+			llm_id: z.string(),
+			version: z.number().nullable().optional(),
+		}),
+		z.object({
+			type: z.literal("conversation-flow"),
+			conversation_flow_id: z.string(),
+			version: z.number().nullable().optional(),
+		}),
+	]),
 	agent_name: z.string().optional(),
 	version: z.number(),
 	voice_id: z.string(),
@@ -779,3 +802,48 @@ export const RetellLLMOutputSchema = z.object({
 	knowledge_base_ids: z.array(z.string()).nullable().optional(),
 	last_modification_timestamp: z.number(),
 });
+
+// ===== Conversation Flow Schemas =====
+
+const ConversationFlowLooseObjectSchema = z.object({}).catchall(z.unknown());
+
+const ConversationFlowModelChoiceSchema = z
+	.object({
+		type: z.literal("cascading"),
+		model: z.string(),
+		high_priority: z.boolean().optional(),
+	})
+	.catchall(z.unknown());
+
+export const CreateConversationFlowInputSchema = z
+	.object({
+		model_choice: ConversationFlowModelChoiceSchema.describe(
+			"The model choice for the conversation flow"
+		),
+		nodes: z
+			.array(ConversationFlowLooseObjectSchema)
+			.describe("Array of node objects in the conversation flow"),
+		start_speaker: z
+			.enum(["user", "agent"])
+			.describe("Who starts the conversation"),
+	})
+	.catchall(z.unknown());
+
+export const GetConversationFlowInputSchema = z.object({
+	conversationFlowId: z.string().describe("The ID of the conversation flow to retrieve"),
+	version: z.number().optional().describe("Optional version to retrieve"),
+});
+
+export const UpdateConversationFlowInputSchema = z
+	.object({
+		conversationFlowId: z.string().describe("The ID of the conversation flow to update"),
+		version: z.number().optional().describe("Optional version to update"),
+	})
+	.catchall(z.unknown());
+
+export const ConversationFlowOutputSchema = z
+	.object({
+		conversation_flow_id: z.string(),
+		version: z.number(),
+	})
+	.catchall(z.unknown());

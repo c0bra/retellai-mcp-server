@@ -7,12 +7,14 @@ import { registerPhoneNumberTools } from "./phone-number.js";
 // import { registerKnowledgeBaseTools } from "./knowledge-base.js";
 import { registerVoiceTools } from "./voice.js";
 import { registerRetellLLMTools } from "./retell-llm.js";
+import { registerConversationFlowTools } from "./conversation-flow.js";
 
 export const registerAllTools = (server: McpServer, retellClient: Retell) => {
   registerCallTools(server, retellClient);
   registerAgentTools(server, retellClient);
   registerPhoneNumberTools(server, retellClient);
-  //   registerKnowledgeBaseTools(server, retellClient);
-  registerVoiceTools(server, retellClient);
-  registerRetellLLMTools(server, retellClient);
+	//   registerKnowledgeBaseTools(server, retellClient);
+	registerVoiceTools(server, retellClient);
+	registerRetellLLMTools(server, retellClient);
+	registerConversationFlowTools(server, retellClient);
 };
